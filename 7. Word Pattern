@@ -1,0 +1,46 @@
+Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
+
+Example 1:
+  Input: pattern = "abba", str = "dog cat cat dog"
+  Output: true
+  
+Example 2:
+  Input:pattern = "abba", str = "dog cat cat fish"
+  Output: false
+
+Example 3:
+  Input: pattern = "aaaa", str = "dog cat cat dog"
+  Output: false
+
+Example 4:
+  Input: pattern = "abba", str = "dog dog dog dog"
+  Output: false
+  
+Explanation:
+The key here is bijection, that is one-one and onto mapping. You can read about it here: https://en.wikipedia.org/wiki/Bijection.
+
+The solution is simple: map a character in the pattern to a word in the string (in order) and map the same word to the same character. Throughout the loop over the string or pattern, ensure that there exists one and only one mapping between a character in pattern and a word in string (one-one) and each character is mapped to at least one word (onto). That's it!
+
+Code:
+
+class Solution {
+public:
+    bool wordPattern(string pattern, string str) {
+        vector<int> pat_map (26, 0);
+        unordered_map<string,int> str_map;
+        int i=0, n = pattern.size();
+        istringstream ss (str);
+        string token;
+        
+        for(string token; ss >> token; ++i) {
+            if(i == n || pat_map[pattern[i]-'a'] != str_map[token]) return false;
+            
+            // 1-based indexing since map assigns 0 as a default value for keys not found.
+            pat_map[pattern[i]-'a'] = str_map[token] = i+1;
+        }
+        
+        return i == n;
+    }
+};
